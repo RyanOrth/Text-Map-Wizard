@@ -66,5 +66,38 @@ class Room(Window):
 
 
 class PassageWay(Window):
-    def __init__(self, name: str, layout: curses.window) -> None:
+    def __init__(self, name: str = None, width: int = 5, height: int = 5,
+                 pos_y: int = 0, pos_x: int = 0) -> None:
+        self._pos_y = pos_y
+        self._pos_x = pos_x
+        self._width = width
+        self._height = height
+        layout = curses.newwin(height, width + 1, pos_y, pos_x)
+        for i in range(0, height-1):
+            for j in range(0, width):
+                layout.addstr(i, j, '*')
+        if width >= height:
+            layout.border(32, 32, curses.ACS_HLINE, curses.ACS_HLINE,
+                          curses.ACS_LLCORNER, curses.ACS_LRCORNER,
+                          curses.ACS_ULCORNER, curses.ACS_URCORNER)
+        else:
+            layout.border(curses.ACS_VLINE, curses.ACS_VLINE, 32, 32,
+                          curses.ACS_ULCORNER, curses.ACS_URCORNER,
+                          curses.ACS_LLCORNER, curses.ACS_LRCORNER)
         super().__init__(name, layout)
+
+    @property
+    def pos_y(self):
+        return self._pos_y
+
+    @property
+    def pos_x(self):
+        return self._pos_x
+
+    @property
+    def width(self):
+        return self._width
+
+    @property
+    def height(self):
+        return self._height

@@ -4,7 +4,7 @@ from enum import Enum
 
 from renderMap import RenderMap
 from specialCharacters import SpecialEdgeCharacter
-from window import Room, Window
+from window import PassageWay, Room, Window
 
 
 class Direction(Enum):
@@ -17,6 +17,7 @@ class Direction(Enum):
 MIN_ROOM_SIZE = 4
 MAX_ROOM_SIZE = 8
 
+
 def generate_dungeon():
     '''
     Makes a template dungeon
@@ -26,6 +27,7 @@ def generate_dungeon():
         dungeon.append(Room(name=None, pos_x=i*10, open_sides=[SpecialEdgeCharacter(
             'door1', 3, 0, ' '), SpecialEdgeCharacter('door2', 0, 3, ' ')]))
     return dungeon
+
 
 def main(screen: curses.window):
     curses.curs_set(0)
@@ -40,9 +42,11 @@ def main(screen: curses.window):
     #                    pos_y=random.randrange(0, 2*MAX_ROOM_SIZE+1), pos_x=random.randrange(0, 2*MAX_ROOM_SIZE+1))
     #     if(render_map.add_window(canRoom)):
     #         count -= 1
-    for i in range(4):
-        for j in range(4):
+    for i in range(2):
+        for j in range(2):
             render_map.add_window(Room(None, 5, 5, i*10, j*10))
+
+    render_map.add_passageWay(PassageWay(None, 5, 3, 1, 5))
 
     render_map.render()
     curses.napms(5000)

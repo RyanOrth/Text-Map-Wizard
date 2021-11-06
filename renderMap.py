@@ -1,5 +1,5 @@
 from occupiedRegion import OccuppiedRegion
-from window import Room
+from window import PassageWay, Room
 
 
 class RenderMap:
@@ -8,7 +8,9 @@ class RenderMap:
     def __init__(self, screen):
         self.screen = screen
         self._windows = []
+        self._passageways = []
         self._window_positions = []
+        self._passageway_positions = []
 
     def _window_is_not_overlapping(self, candidate_window: Room):
         candidate_region = OccuppiedRegion(candidate_window)
@@ -40,6 +42,11 @@ class RenderMap:
             return True
         return False
 
+    def add_passageWay(self, passage: PassageWay):
+        self._passageways.append(passage)
+        self._passageway_positions.append(OccuppiedRegion(passage))
+        return True
+
     def replace_window(self, window: Room):
         '''Update or remove a window in the windows list'''
         self._windows.pop(self._windows.index(window))
@@ -56,7 +63,13 @@ class RenderMap:
         # data = ''
         for window in self._windows:
             window.layout.refresh()
+        for passageway in self._passageways:
+            passageway.layout.refresh()
 
     @property
     def windows(self) -> list:
         return self._windows
+
+    @property
+    def passageways(self) -> list:
+        return self._passageways
