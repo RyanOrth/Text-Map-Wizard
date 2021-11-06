@@ -13,14 +13,26 @@ def generate_map(map_width, map_height, pos_y, pos_x):
     return map_window
 
 
-class render_map:
+class RenderMap:
     '''Render function for screen windows'''
-    def __init__():
-        screen
-        window = []
+    def __init__(self, screen):
+        self.screen = screen
+        self.windows = []
 
-    def render():
-        screen.erase()
+    def add_window(self, window):
+      self.windows.push((window.name, window))
+
+    def replace_window(self, window):
+      index = list(filter(lambda name:window.name in name, self.windows)).index
+      self.windows.pop(index)
+      if window is not None:
+        self.windows.push((window.name, window))
+
+    def render(self):
+        self.screen.erase()
+        self.screen.refresh()
+        for window in self.windows:
+          window.win.refresh()
 
 
 def main(screen: curses.window):
@@ -29,21 +41,28 @@ def main(screen: curses.window):
     # my__window = curses.newwin(10, 10)
     # my__window.addstr(0, 0, "G'day mate")
     # my__window.refresh()
-    my__window = generate_map(5, 5, 0, 0)
+    render_map = RenderMap(screen)
 
-    my__window.refresh()
+    win1 = generate_map(5, 5, 0, 0)
+
+    win1.refresh()
 
     win2 = generate_map(8, 5, 5, 5)
     win2.refresh()
     # curses.napms(2000)
 
+    render_map.add_window('win1', win1)
+    render_map.add_window('win2', win2)
+
     for i in range(0, 15):
-        y, x = my__window.getbegyx()
-        screen.erase()
-        screen.refresh()
-        my__window.mvwin(i, i)
-        win2.refresh()
-        my__window.refresh()
+        y, x = win1.getbegyx()
+        # screen.erase()
+        # screen.refresh()
+        # win1.mvwin(i, i)
+        # win2.refresh()
+        # win1.refresh()
+        render_map.replace_window('win1', win2.mvwin(i, i))
+        render_map.render()
         curses.napms(500)
 
     curses.napms(4000)
