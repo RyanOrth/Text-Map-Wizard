@@ -33,32 +33,41 @@ def generate_dungeon():
     return dungeon
 
 class SpecialEdgeCharacter:
-  def __init__(self, pos_y: int, pos_x: int, character: str):
-    self.pos_y = pos_y
-    self.pos_x = pos_x
-    self.character = character
+  def __init__(self, name:str, pos_y: int, pos_x: int, character: str):
+    self._name = name
+    self._pos_y = pos_y
+    self._pos_x = pos_x
+    self._character = character
 
   @property
-  def pos_y(self) -> int:
-    return self.pos_y
+  def _name(self) -> str:
+    return self._name
 
   @property
-  def pos_x(self) -> int:
-    return self.pos_x
+  def _pos_y(self) -> int:
+    return self._pos_y
 
   @property
-  def character(self) -> str:
-    return self.character
+  def _pos_x(self) -> int:
+    return self._pos_x
+
+  @property
+  def _character(self) -> str:
+    return self._character
 
 class Window:
 
-    def __init__(self, name: str, layout: curses.window, special_edge_characters) -> None:
+    def __init__(self, name: str, layout: curses.window, special_edge_characters = None) -> None:
         self._name = name
         self._layout = layout
 
-        for special_edge_character in special_edge_characters:
-          layout.addstr(special_edge_character.pos_y, special_edge_character.pos_x, special_edge_character.character)
-        self._special_edges = special_edge_characters
+        if special_edge_characters is not None:
+          for special_edge_character in special_edge_characters:
+            layout.addstr(special_edge_character.pos_y, special_edge_character.pos_x, special_edge_character.character)
+          self._special_edges = special_edge_characters
+        else:
+          self._special_edges = None
+
         return None
 
     @property
