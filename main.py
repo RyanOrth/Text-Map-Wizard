@@ -5,17 +5,7 @@ from enum import Enum
 from renderMap import RenderMap
 from specialCharacters import SpecialEdgeCharacter
 from window import Room, Window
-
-
-class Direction(Enum):
-    NORTH = 0
-    EAST = 1
-    SOUTH = 2
-    WEST = 3
-
-
-MIN_ROOM_SIZE = 4
-MAX_ROOM_SIZE = 8
+from constants import MIN_ROOM_SIZE, MAX_ROOM_SIZE
 
 def generate_dungeon():
     '''
