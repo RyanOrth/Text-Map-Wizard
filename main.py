@@ -186,30 +186,31 @@ class RenderMap:
         self._windows = []
         self._window_positions = []
 
-    def _window_is_not_overlapping(self, candidate_window: Window):
-        min_y, min_x = candidate_window.layout.getbegyx()
-        max_y, max_x = candidate_window.layout.getmaxyx()
-        candidate_region = OccuppiedRegion(candidate_window.name, min_y, min_x, max_y, max_x)
+    def _window_is_not_overlapping(self, candidate_window: Room):
+        candidate_region = OccuppiedRegion(candidate_window.name, candidate_window.pos_y, candidate_window.pos_x, candidate_window.pos_y + candidate_window.height, candidate_window.pos_x + candidate_window.width)
 
         for window_position in self._window_positions:
-            if(((candidate_region.min_x in range(window_position.min_x, window_position.max_x)) or
-            candidate_region.max_x in range(window_position.min_x, window_position.max_x)) and
-            ((candidate_region.min_y in range(window_position.min_y, window_position.max_y)) or
-            candidate_region.max_y in range(window_position.min_y, window_position.max_y))):
-                return False
+            if(window_position.min_x <= candidate_region.min_x <= window_position.max_x):
+                if(window_position.min_y <= candidate_region.min_y <= window_position.max_y):
+                    return False
+                elif(window_position.min_y <= candidate_region.max_y <= window_position.max_y):
+                    return False
+            elif (window_position.min_x <= candidate_region.max_x <= window_position.max_x):
+                if(window_position.min_y <= candidate_region.min_y <= window_position.max_y):
+                    return False
+                elif(window_position.min_y <= candidate_region.max_y <= window_position.max_y):
+                    return False
         return True
 
-    def add_window(self, window: Window):
+    def add_window(self, window: Room):
         '''Adding a new window to the windows list'''
         if self._window_is_not_overlapping(window):
             self._windows.append(window)
-            min_y, min_x = window.layout.getbegyx()
-            max_y, max_x = window.layout.getmaxyx()
-            self._window_positions.append(OccuppiedRegion(window.name, min_y, min_x, max_y, max_x))
+            self._window_positions.append(OccuppiedRegion(window.name, window.pos_y, window.pos_x, window.pos_y + window.height, window.pos_x + window.width))
             return True
         return False
 
-    def replace_window(self, window: Window):
+    def replace_window(self, window: Room):
         '''Update or remove a window in the windows list'''
         self._windows.pop(self._windows.index(window))
         # list(filter(lambda x:11 in x, Input))
@@ -249,10 +250,11 @@ def main(screen: curses.window):
     count = 2
 
     while count > 0:
-        canRoom = Room(name=None, width=random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE),
-                       height=random.randrange(
-            MIN_ROOM_SIZE, MAX_ROOM_SIZE),
-            pos_y=random.randrange(0, 10), pos_x=random.randrange(0, 10))
+        # canRoom = Room(name=None, width=random.randrange(MIN_ROOM_SIZE - 10, MAX_ROOM_SIZE - 10),
+        #                height=random.randrange(
+        #     MIN_ROOM_SIZE, MAX_ROOM_SIZE),
+        #     pos_y=random.randrange(0, 10), pos_x=random.randrange(0, 10))
+        canRoom = Room(name=None, width=5, height=5, pos_y=random.randrange(0, 12), pos_x=random.randrange(0, 12))
         if(render_map.add_window(canRoom)):
             count -= 1
 
@@ -271,7 +273,7 @@ def main(screen: curses.window):
     #     render_map.render()
     #     curses.napms(500)
     render_map.render()
-    curses.napms(4000)
+    curses.napms(500)
     curses.curs_set(1)
 
 
