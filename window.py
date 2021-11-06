@@ -31,7 +31,7 @@ class Window:
 
 
 class Room(Window):
-    def __init__(self, name: str = None, width: int = 5, height: int = 5,
+    def __init__(self, name: str = None, height: int = 5, width: int = 5,
                  pos_y: int = 0, pos_x: int = 0, open_sides: list = []) -> None:
         self._width = width
         self._height = height
@@ -40,7 +40,7 @@ class Room(Window):
         layout = curses.newwin(height, width + 1, pos_y, pos_x)
         for i in range(0, height-1):
             for j in range(0, width):
-                layout.addstr(i, j, '*')
+                layout.addstr(i, j, '.')
         layout.box()
         if open_sides is not None:
             for special_edge_character in open_sides:
@@ -66,7 +66,7 @@ class Room(Window):
 
 
 class PassageWay(Window):
-    def __init__(self, name: str = None, width: int = 5, height: int = 5,
+    def __init__(self, name: str = None, height: int = 5, width: int = 5,
                  pos_y: int = 0, pos_x: int = 0) -> None:
         self._pos_y = pos_y
         self._pos_x = pos_x
@@ -75,7 +75,7 @@ class PassageWay(Window):
         layout = curses.newwin(height, width + 1, pos_y, pos_x)
         for i in range(0, height-1):
             for j in range(0, width):
-                layout.addstr(i, j, '*')
+                layout.addstr(i, j, '.')
         if width >= height:
             layout.border(32, 32, curses.ACS_HLINE, curses.ACS_HLINE,
                           curses.ACS_LLCORNER, curses.ACS_LRCORNER,
@@ -87,17 +87,17 @@ class PassageWay(Window):
         super().__init__(name, layout)
 
     @property
-    def pos_y(self):
+    def pos_y(self) -> int:
         return self._pos_y
 
     @property
-    def pos_x(self):
+    def pos_x(self) -> int:
         return self._pos_x
 
     @property
-    def width(self):
+    def width(self) -> int:
         return self._width
 
     @property
-    def height(self):
+    def height(self) -> int:
         return self._height

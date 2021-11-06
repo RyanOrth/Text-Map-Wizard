@@ -18,7 +18,7 @@ MIN_ROOM_SIZE = 4
 MAX_ROOM_SIZE = 8
 
 
-def generate_dungeon():
+def generate_dungeon() -> list:
     '''
     Makes a template dungeon
     '''
@@ -44,9 +44,9 @@ def main(screen: curses.window):
     #         count -= 1
     for i in range(2):
         for j in range(2):
-            render_map.add_window(Room(None, 5, 5, i*10, j*10))
+            render_map.add_room(Room(None, 5, 5, i*10, j*10))
 
-    render_map.add_passageWay(PassageWay(None, 5, 3, 1, 5))
+    render_map.add_passageWay(PassageWay(None, 3, 5, 1, 5))
 
     render_map.render()
     curses.napms(5000)
