@@ -150,12 +150,12 @@ class Passageway(Window):
 
 
 class OccuppiedRegion:
-    def __init__(self, name: str, min_y: int, min_x: int, max_y: int, max_x: int):
-        self._name = name
-        self._min_y = min_y
-        self._min_x = min_x
-        self._max_y = max_y
-        self._max_x = max_x
+    def __init__(self, window: Room):
+        self._name = window.name
+        self._min_y = window.pos_y
+        self._min_x = window.pos_x
+        self._max_y = window.pos_y + window.height
+        self._max_x = window.pos_x + window.width
 
     @property
     def name(self):
@@ -187,7 +187,7 @@ class RenderMap:
         self._window_positions = []
 
     def _window_is_not_overlapping(self, candidate_window: Room):
-        candidate_region = OccuppiedRegion(candidate_window.name, candidate_window.pos_y, candidate_window.pos_x, candidate_window.pos_y + candidate_window.height, candidate_window.pos_x + candidate_window.width)
+        candidate_region = OccuppiedRegion(candidate_window)
 
         for window_position in self._window_positions:
             if(window_position.min_x <= candidate_region.min_x <= window_position.max_x):
@@ -206,16 +206,17 @@ class RenderMap:
         '''Adding a new window to the windows list'''
         if self._window_is_not_overlapping(window):
             self._windows.append(window)
-            self._window_positions.append(OccuppiedRegion(window.name, window.pos_y, window.pos_x, window.pos_y + window.height, window.pos_x + window.width))
+            self._window_positions.append(OccuppiedRegion(window))
             return True
         return False
 
     def replace_window(self, window: Room):
         '''Update or remove a window in the windows list'''
         self._windows.pop(self._windows.index(window))
-        # list(filter(lambda x:11 in x, Input))
+        self._window_positions.pop(self._windows_positions.index(list(filter(lambda x: window.name is x.name, self._window_positions))))
         if window is not None:
             self._windows.append(window)
+            self._window_positions.append(OccuppiedRegion(window))
 
     def render(self):
         '''Render screen function'''
