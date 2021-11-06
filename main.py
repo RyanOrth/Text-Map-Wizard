@@ -25,7 +25,7 @@ def generate_room(width: int = 5, height: int = 5,
     for i in range(1, height - 1):
         for j in range(1, width):
             map_window.addstr(i, j, '*')
-    return Window(name, map_window, [SpecialEdgeCharacter(5, 0, '*'), SpecialEdgeCharacter(height, 5, '*')])
+    return Window(name, map_window, [SpecialEdgeCharacter('ryan is a bad person', 5, 0, '*'), SpecialEdgeCharacter('ryan has many erro',  height, 5, '*')])
 
 
 def generate_dungeon():
@@ -166,10 +166,10 @@ class RenderMap:
         max_coords = candidate_window.layout.getmaxyx()
 
         for window_position in self._window_positions:
-            if(((min_coords[0] >= window_position[0][0]) or (max_coords[0] <= window_position[1][0])) and ((min_coords[1] >= window_position[0][1]) or (max_coords[1] <= window_position[1][1]))):
-                return True
+            if(not ((min_coords[0] >= window_position[0][0]) or (max_coords[0] <= window_position[1][0])) and ((min_coords[1] >= window_position[0][1]) or (max_coords[1] <= window_position[1][1]))):
+                return False
 
-        return False
+        return True
 
     def add_window(self, window: Window):
         '''Adding a new window to the windows list'''
