@@ -144,29 +144,51 @@ class Passageway(Window):
         super().__init__(name, layout)
 
 
+# class OccuppiedRegion:
+#   __init__(self, min_y, min_x, maxy)
+
 class RenderMap:
     '''Contains windows to be rendered'''
 
     def __init__(self, screen):
         self.screen = screen
-        self.windows = []
+        self._windows = []
+        self._window_positions = []
+
+    def _window_overlaps(self, candidate_window: Window):
+      min_coords = candidate_window.layout.getbegyx()
+      max_coords = candidate_window.layout.getmaxyx()
+
+      for window_position in self._window_positions:
+        if(((min_coords[0] >= window_position[0][0]) or (max_coords[0] <= window_position[1][0])) and ((min_coords[1] >= window_position[0][1]) or (max_coords[1] <= window_position[1][1]))):
+          return True
+        
+      return False
 
     def add_window(self, window: Window):
         '''Adding a new window to the windows list'''
-        self.windows.append(window)
+        if not self._window_overlaps(window):
+          self._windows.append(window)
+          self._window_positions.append((window.layout.getbegyx(), window.layout.getmaxyx()))
+          return True
+        return False
 
     def replace_window(self, window: Window):
         '''Update or remove a window in the windows list'''
-        self.windows.pop(self.windows.index(window))
+        self._windows.pop(self._windows.index(window))
         if window is not None:
-            self.windows.append(window)
+            self._windows.append(window)
 
     def render(self):
         '''Render screen function'''
         self.screen.erase()
         self.screen.refresh()
-        for window in self.windows:
+        for window in self._windows:
             window.layout.refresh()
+
+    @property
+    def windows(self) -> list:
+      return self._windows
 
 
 def main(screen: curses.window):
@@ -194,7 +216,11 @@ def main(screen: curses.window):
                        height=random.randrange(
             MIN_ROOM_SIZE, MAX_ROOM_SIZE),
             pos_y=random.randrange(0, 10), pos_x=random.randrange(0, 10))
-        count -= 1
+        if(render_map.add_window(canRoom)):
+          count -= 1
+
+    # for room in generate_dungeon():
+    #   render_map.add_window(room)
 
     # for i in range(0, 15):
     #     y, x = win1.layout.getbegyx()
@@ -208,7 +234,7 @@ def main(screen: curses.window):
     #     render_map.render()
     #     curses.napms(500)
     render_map.render()
-    curses.napms(4000)
+    curses.napms(1000)
     curses.curs_set(1)
 
 
