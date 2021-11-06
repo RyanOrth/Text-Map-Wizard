@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 # vscode project settings
-.code-workspace
+*.code-workspace
+.vscode

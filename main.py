@@ -1,38 +1,64 @@
 import curses
 # from curses import newwin
-from curses import window
+# from curses import window
 
 
-def generate_map(map_width, map_height, pos_y, pos_x):
+def generate_room(width, height, pos_y, pos_x):
     # Need extra space for width due to cursor moving past extra character when adding string
-    map_window = curses.newwin(map_height, map_width + 1, pos_y, pos_x)
+    map_window = curses.newwin(height, width + 1, pos_y, pos_x)
     map_window.box()
-    for i in range(1, map_height - 1):
-        for j in range(1, map_width):
+    for i in range(1, height - 1):
+        for j in range(1, width):
             map_window.addstr(i, j, '*')
     return map_window
 
 
+def generate_dungeon():
+    '''
+    Makes a template dungeon
+    '''
+    for i in range(3):
+        generate_room(pos_x=i*10).refresh()
+
+
+class Window:
+
+    def __init__(self, name: str, layout: curses.window) -> None:
+        self._name = name
+        self._layout = layout
+        return None
+
+    @property
+    def name(self):
+        return self._name
+
+        @property
+        def layout(self):
+            return self._layout
+
+
 class RenderMap:
     '''Render function for screen windows'''
+
     def __init__(self, screen):
         self.screen = screen
         self.windows = []
 
     def add_window(self, window):
-      self.windows.push((window.name, window))
+        self.windows.push((window.name, window))
 
     def replace_window(self, window):
-      index = list(filter(lambda name:window.name in name, self.windows)).index
-      self.windows.pop(index)
-      if window is not None:
-        self.windows.push((window.name, window))
+        index = list(
+            filter(lambda name: window.name in name, self.windows)).index
+        self.windows.pop(index)
+        if window is not None:
+            self.windows.push((window.name, window))
 
     def render(self):
         self.screen.erase()
         self.screen.refresh()
         for window in self.windows:
-          window.win.refresh()
+            window.win.refresh()
 
 
 def main(screen: curses.window):
@@ -43,11 +69,11 @@ def main(screen: curses.window):
     # my__window.refresh()
     render_map = RenderMap(screen)
 
-    win1 = generate_map(5, 5, 0, 0)
+    win1 = generate_room(5, 5, 0, 0)
 
     win1.refresh()
 
-    win2 = generate_map(8, 5, 5, 5)
+    win2 = generate_room(8, 5, 5, 5)
     win2.refresh()
     # curses.napms(2000)
 
