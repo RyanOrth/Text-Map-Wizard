@@ -1,6 +1,14 @@
 import curses
+from enum import Enum
 # from curses import newwin
 # from curses import window
+
+
+class Direction(Enum):
+    NORTH = 0
+    EAST = 1
+    SOUTH = 2
+    WEST = 3
 
 
 def generate_room(width: int = 5, height: int = 5,
@@ -21,7 +29,7 @@ def generate_dungeon():
     '''
     dungeon = []
     for i in range(4):
-        dungeon.append(generate_room(pos_x=i*10))
+        dungeon.append(Room(name=None, pos_x=i*10))
     return dungeon
 
 
@@ -31,17 +39,17 @@ class Window:
         self._name = name
         self._layout = layout
 
-        borders = []
-        layout_height, layout_width = layout.getmaxyx()
-        for i in range(0, layout_width):
-          borders.append((0, i, layout.getch(0, i)))
-        for j in range(1, layout_height):
-          borders.append((j, layout_width, layout.getch(j, layout_width)))
-        for i in range(layout_width - 1, 0):
-          borders.append((layout_height, i, layout.getch(layout_height, i)))
-        for j in range(layout_height - 1, 1):
-          borders.append((j, 0, layout.getch(j, 0)))
-        self._borders = borders
+        # borders = []
+        # layout_height, layout_width = layout.getmaxyx()
+        # for i in range(0, layout_width):
+        #     borders.append((0, i, layout.getch(0, i)))
+        # for j in range(1, layout_height):
+        #     borders.append((j, layout_width, layout.getch(j, layout_width)))
+        # for i in range(layout_width - 1, 0):
+        #     borders.append((layout_height, i, layout.getch(layout_height, i)))
+        # for j in range(layout_height - 1, 1):
+        #     borders.append((j, 0, layout.getch(j, 0)))
+        # self._borders = borders
         return None
 
     @property
@@ -52,9 +60,20 @@ class Window:
     def layout(self) -> curses.window:
         return self._layout
 
-    @property
-    def borders(self):
-        return self._borders
+    # @property
+    # def borders(self):
+    #     return self._borders
+
+
+class Room(Window):
+    def __init__(self, name: str = None, width: int = 5, height: int = 5,
+                 pos_y: int = 0, pos_x: int = 0, open_sides: list = []) -> None:
+        layout = curses.newwin(height, width + 1, pos_y, pos_x)
+        for i in range(0, height-1):
+            for j in range(0, width):
+                layout.addstr(i, j, '*')
+        layout.box()
+        super().__init__(name, layout)
 
 
 class RenderMap:
@@ -116,6 +135,7 @@ def main(screen: curses.window):
     #     curses.napms(500)
     render_map.render()
     curses.napms(4000)
+    curses.curs_set(1)
+
 
 curses.wrapper(main)
-curses.curs_set(1)
