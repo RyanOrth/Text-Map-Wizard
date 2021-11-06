@@ -186,17 +186,17 @@ class RenderMap:
         self._windows = []
         self._window_positions = []
 
-    def _window_is_not_overlapping(self, candidate_window: Window):
-        min_y, min_x = candidate_window.layout.getbegyx()
-        max_y, max_x = candidate_window.layout.getmaxyx()
-        candidate_region = OccuppiedRegion(
-            candidate_window.name, min_y, min_x, max_y, max_x)
+    def _window_is_not_overlapping(self, candidate_room: Room):
+        # min_y, min_x = candidate_room.layout.getbegyx()
+        # max_y, max_x = candidate_room.layout.getmaxyx()
+        # candidate_region = OccuppiedRegion(
+        #     candidate_room.name, min_y, min_x, max_y, max_x)
 
-        for window_position in self._window_positions:
-            if(((candidate_region.min_x in range(window_position.min_x, window_position.max_x)) or
-                candidate_region.max_x in range(window_position.min_x, window_position.max_x)) and
-               ((candidate_region.min_y in range(window_position.min_y, window_position.max_y)) or
-                    candidate_region.max_y in range(window_position.min_y, window_position.max_y))):
+        for fixed_window in self._windows:
+            if(((candidate_room.pos_x in range(fixed_window.pos_x, fixed_window.pos_x + fixed_window.width + 1)) or
+                candidate_room.pos_x + candidate_room.width in range(fixed_window.pos_x, fixed_window.pos_x + fixed_window.width + 1)) and
+               ((candidate_room.pos_y in range(fixed_window.pos_y, fixed_window.pos_y + fixed_window.height + 1)) or
+                    candidate_room.pos_y + candidate_room.height in range(fixed_window.pos_y, fixed_window.pos_y + fixed_window.height + 1))):
                 return False
         return True
 
@@ -204,10 +204,10 @@ class RenderMap:
         '''Adding a new window to the windows list'''
         if self._window_is_not_overlapping(window):
             self._windows.append(window)
-            min_y, min_x = window.layout.getbegyx()
-            max_y, max_x = window.layout.getmaxyx()
-            self._window_positions.append(OccuppiedRegion(
-                window.name, min_y, min_x, max_y, max_x))
+            # min_y, min_x = window.layout.getbegyx()
+            # max_y, max_x = window.layout.getmaxyx()
+            # self._window_positions.append(OccuppiedRegion(
+            #     window.name, min_y, min_x, max_y, max_x))
             return True
         return False
 
@@ -222,6 +222,7 @@ class RenderMap:
         '''Render screen function'''
         self.screen.erase()
         self.screen.refresh()
+        data = ''
         for window in self._windows:
             window.layout.refresh()
 
@@ -250,13 +251,15 @@ def main(screen: curses.window):
     # render_map.add_window(win2)
     count = 2
 
-    while count > 0:
-        canRoom = Room(name=None, width=random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE),
-                       height=random.randrange(
-            MIN_ROOM_SIZE, MAX_ROOM_SIZE),
-            pos_y=random.randrange(0, 10), pos_x=random.randrange(0, 10))
-        if(render_map.add_window(canRoom)):
-            count -= 1
+    # while count > 0:
+    #     canRoom = Room(name=None, width=random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE),
+    #                    height=random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE),
+    #                    pos_y=random.randrange(0, 2*MAX_ROOM_SIZE+1), pos_x=random.randrange(0, 2*MAX_ROOM_SIZE+1))
+    #     if(render_map.add_window(canRoom)):
+    #         count -= 1
+    for i in range(6):
+        for j in range(6):
+            render_map.add_window(Room(None, 5, 5, i*10, j*10))
 
     # for room in generate_dungeon():
     #   render_map.add_window(room)
@@ -273,7 +276,7 @@ def main(screen: curses.window):
     #     render_map.render()
     #     curses.napms(500)
     render_map.render()
-    curses.napms(4000)
+    curses.napms(5000)
     curses.curs_set(1)
 
 
