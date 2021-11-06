@@ -3,8 +3,10 @@ import curses
 # from curses import window
 
 
-def generate_room(width, height, pos_y, pos_x, name = None):
-    # Need extra space for width due to cursor moving past extra character when adding string
+def generate_room(width: int = 5, height: int = 5,
+                  pos_y: int = 0, pos_x: int = 0, name=None):
+    # Need extra space for width due to cursor moving past extra
+    # character when adding string
     map_window = curses.newwin(height, width + 1, pos_y, pos_x)
     map_window.box()
     for i in range(1, height - 1):
@@ -17,8 +19,10 @@ def generate_dungeon():
     '''
     Makes a template dungeon
     '''
+    dungeon = []
     for i in range(3):
-        generate_room(pos_x=i*10).refresh()
+        dungeon.push(generate_room(pos_x=i*10))
+    return dungeon
 
 
 class Window:
@@ -41,11 +45,11 @@ class Window:
         return None
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @property
-    def layout(self):
+    def layout(self) -> curses.window:
         return self._layout
 
     @property
@@ -96,7 +100,9 @@ def main(screen: curses.window):
 
     render_map.add_window(win1)
     render_map.add_window(win2)
-    render_map.render()
+    for room in generate_dungeon():
+        render_map.add_window(room)
+
     # for i in range(0, 15):
     #     y, x = win1.layout.getbegyx()
     #     # screen.erase()
@@ -108,7 +114,7 @@ def main(screen: curses.window):
     #     render_map.replace_window(win1)
     #     render_map.render()
     #     curses.napms(500)
-
+    render_map.render()
     curses.napms(4000)
 
 curses.wrapper(main)
