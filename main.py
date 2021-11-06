@@ -187,19 +187,27 @@ class RenderMap:
         self._window_positions = []
 
     def _window_is_not_overlapping(self, candidate_window: Room):
-        candidate_region = OccuppiedRegion(candidate_window.name, candidate_window.pos_y, candidate_window.pos_x,
-                                           candidate_window.pos_y + candidate_window.height, candidate_window.pos_x + candidate_window.width)
+        candidate_region = OccuppiedRegion(candidate_window.name, candidate_window.pos_y,
+                                           candidate_window.pos_x,
+                                           candidate_window.pos_y + candidate_window.height,
+                                           candidate_window.pos_x + candidate_window.width)
 
         for window_position in self._window_positions:
-            if(window_position.min_x <= candidate_region.min_x <= window_position.max_x):
-                if(window_position.min_y <= candidate_region.min_y <= window_position.max_y):
+            if(window_position.min_x <= candidate_region.min_x
+               <= window_position.max_x):
+                if(window_position.min_y <= candidate_region.min_y
+                   <= window_position.max_y):
                     return False
-                elif(window_position.min_y <= candidate_region.max_y <= window_position.max_y):
+                elif(window_position.min_y <= candidate_region.max_y
+                     <= window_position.max_y):
                     return False
-            elif (window_position.min_x <= candidate_region.max_x <= window_position.max_x):
-                if(window_position.min_y <= candidate_region.min_y <= window_position.max_y):
+            elif (window_position.min_x <= candidate_region.max_x
+                  <= window_position.max_x):
+                if(window_position.min_y <= candidate_region.min_y
+                   <= window_position.max_y):
                     return False
-                elif(window_position.min_y <= candidate_region.max_y <= window_position.max_y):
+                elif(window_position.min_y <= candidate_region.max_y
+                     <= window_position.max_y):
                     return False
         return True
 
@@ -208,7 +216,8 @@ class RenderMap:
         if self._window_is_not_overlapping(window):
             self._windows.append(window)
             self._window_positions.append(OccuppiedRegion(
-                window.name, window.pos_y, window.pos_x, window.pos_y + window.height, window.pos_x + window.width))
+                window.name, window.pos_y, window.pos_x,
+                window.pos_y + window.height, window.pos_x + window.width))
             return True
         return False
 
@@ -258,8 +267,8 @@ def main(screen: curses.window):
     #                    pos_y=random.randrange(0, 2*MAX_ROOM_SIZE+1), pos_x=random.randrange(0, 2*MAX_ROOM_SIZE+1))
     #     if(render_map.add_window(canRoom)):
     #         count -= 1
-    for i in range(6):
-        for j in range(6):
+    for i in range(4):
+        for j in range(4):
             render_map.add_window(Room(None, 5, 5, i*10, j*10))
 
     # for room in generate_dungeon():
