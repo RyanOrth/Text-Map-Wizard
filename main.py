@@ -186,32 +186,33 @@ class RenderMap:
         self._windows = []
         self._window_positions = []
 
-    def _window_is_not_overlapping(self, candidate_room: Room):
-        # min_y, min_x = candidate_room.layout.getbegyx()
-        # max_y, max_x = candidate_room.layout.getmaxyx()
-        # candidate_region = OccuppiedRegion(
-        #     candidate_room.name, min_y, min_x, max_y, max_x)
+    def _window_is_not_overlapping(self, candidate_window: Room):
+        candidate_region = OccuppiedRegion(candidate_window.name, candidate_window.pos_y, candidate_window.pos_x,
+                                           candidate_window.pos_y + candidate_window.height, candidate_window.pos_x + candidate_window.width)
 
-        for fixed_window in self._windows:
-            if(((candidate_room.pos_x in range(fixed_window.pos_x, fixed_window.pos_x + fixed_window.width + 1)) or
-                candidate_room.pos_x + candidate_room.width in range(fixed_window.pos_x, fixed_window.pos_x + fixed_window.width + 1)) and
-               ((candidate_room.pos_y in range(fixed_window.pos_y, fixed_window.pos_y + fixed_window.height + 1)) or
-                    candidate_room.pos_y + candidate_room.height in range(fixed_window.pos_y, fixed_window.pos_y + fixed_window.height + 1))):
-                return False
+        for window_position in self._window_positions:
+            if(window_position.min_x <= candidate_region.min_x <= window_position.max_x):
+                if(window_position.min_y <= candidate_region.min_y <= window_position.max_y):
+                    return False
+                elif(window_position.min_y <= candidate_region.max_y <= window_position.max_y):
+                    return False
+            elif (window_position.min_x <= candidate_region.max_x <= window_position.max_x):
+                if(window_position.min_y <= candidate_region.min_y <= window_position.max_y):
+                    return False
+                elif(window_position.min_y <= candidate_region.max_y <= window_position.max_y):
+                    return False
         return True
 
-    def add_window(self, window: Window):
+    def add_window(self, window: Room):
         '''Adding a new window to the windows list'''
         if self._window_is_not_overlapping(window):
             self._windows.append(window)
-            # min_y, min_x = window.layout.getbegyx()
-            # max_y, max_x = window.layout.getmaxyx()
-            # self._window_positions.append(OccuppiedRegion(
-            #     window.name, min_y, min_x, max_y, max_x))
+            self._window_positions.append(OccuppiedRegion(
+                window.name, window.pos_y, window.pos_x, window.pos_y + window.height, window.pos_x + window.width))
             return True
         return False
 
-    def replace_window(self, window: Window):
+    def replace_window(self, window: Room):
         '''Update or remove a window in the windows list'''
         self._windows.pop(self._windows.index(window))
         # list(filter(lambda x:11 in x, Input))
