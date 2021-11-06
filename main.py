@@ -25,7 +25,7 @@ def generate_room(width: int = 5, height: int = 5,
     for i in range(1, height - 1):
         for j in range(1, width):
             map_window.addstr(i, j, '*')
-    return Window(name, map_window, [SpecialEdgeCharacter(5, 0, '*'), SpecialEdgeCharacter(height, 5, '*')])
+    return Window(name, map_window, [SpecialEdgeCharacter('ryan is a bad person', 5, 0, '*'), SpecialEdgeCharacter('ryan has many erro',  height, 5, '*')])
 
 
 def generate_dungeon():
@@ -156,7 +156,7 @@ class OccuppiedRegion:
         self._min_x = min_x
         self._max_y = max_y
         self._max_x = max_x
-    
+
     @property
     def name(self):
         return self.name
@@ -164,7 +164,7 @@ class OccuppiedRegion:
     @property
     def min_y(self):
         return self._min_y
-    
+
     @property
     def min_x(self):
         return self._min_x
@@ -176,7 +176,7 @@ class OccuppiedRegion:
     @property
     def max_x(self):
         return self._max_x
-    
+
 
 class RenderMap:
     '''Contains windows to be rendered'''
