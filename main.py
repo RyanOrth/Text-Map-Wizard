@@ -1,5 +1,6 @@
 import curses
 from enum import Enum
+import random
 # from curses import newwin
 # from curses import window
 
@@ -9,6 +10,10 @@ class Direction(Enum):
     EAST = 1
     SOUTH = 2
     WEST = 3
+
+
+MIN_ROOM_SIZE = 4
+MAX_ROOM_SIZE = 8
 
 
 def generate_room(width: int = 5, height: int = 5,
@@ -68,11 +73,53 @@ class Window:
 class Room(Window):
     def __init__(self, name: str = None, width: int = 5, height: int = 5,
                  pos_y: int = 0, pos_x: int = 0, open_sides: list = []) -> None:
+        self._width = width
+        self._height = height
+        self._pos_x = pos_x
+        self._pos_y = pos_y
         layout = curses.newwin(height, width + 1, pos_y, pos_x)
         for i in range(0, height-1):
             for j in range(0, width):
                 layout.addstr(i, j, '*')
         layout.box()
+        super().__init__(name, layout)
+
+    @property
+    def pos_x(self):
+        return self._pos_x
+
+    @property
+    def pos_y(self):
+        return self._pos_y
+
+    @property
+    def height(self):
+        return self._height
+
+    @property
+    def width(self):
+        return self._width
+
+
+def check_for_overlap(room: Window, rooms: list):
+    """Return false if the room overlaps any other room."""
+    for current_room in rooms:
+        xmin1 = room.pos_x
+        xmax1 = room.pos_x + room.width
+        xmin2 = current_room.pos_x
+        xmax2 = current_room.pos_x + current_room.width
+        ymin1 = room.pos_y
+        ymax1 = room.pos_y + room.height
+        ymin2 = current_room.pos_y
+        ymax2 = current_room.pos_y + current_room.height
+        if (xmin1 <= xmax2 and xmax1 >= xmin2) and \
+           (ymin1 <= ymax2 and ymax1 >= ymin2):
+            return True
+    return False
+
+
+class Passageway(Window):
+    def __init__(self, name: str, layout: curses.window) -> None:
         super().__init__(name, layout)
 
 
@@ -119,8 +166,14 @@ def main(screen: curses.window):
 
     # render_map.add_window(win1)
     # render_map.add_window(win2)
-    for room in generate_dungeon():
-        render_map.add_window(room)
+    count = 2
+
+    while count > 0:
+        canRoom = Room(name=None, width=random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE),
+                       height=random.randrange(
+            MIN_ROOM_SIZE, MAX_ROOM_SIZE),
+            pos_y=random.randrange(0, 10), pos_x=random.randrange(0, 10))
+        count -= 1
 
     # for i in range(0, 15):
     #     y, x = win1.layout.getbegyx()
