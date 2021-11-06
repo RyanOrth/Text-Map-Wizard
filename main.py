@@ -64,9 +64,9 @@ class Window:
         if special_edge_characters is not None:
           for special_edge_character in special_edge_characters:
             layout.addstr(special_edge_character.pos_y, special_edge_character.pos_x, special_edge_character.character)
-          self._special_edges = special_edge_characters
+          self._special_edge_characters = special_edge_characters
         else:
-          self._special_edges = None
+          self._special_edges_characters = None
 
         return None
 
@@ -80,7 +80,7 @@ class Window:
 
     @property
     def special_edges(self):
-        return self._special_edges
+        return self._special_edge_characters
         
 
 class Room(Window):
@@ -91,6 +91,9 @@ class Room(Window):
             for j in range(0, width):
                 layout.addstr(i, j, '*')
         layout.box()
+        if open_sides is not None:
+          for special_edge_character in open_sides:
+            layout.addstr(special_edge_character.pos_y, special_edge_character.pos_x, special_edge_character.character)
         super().__init__(name, layout)
 
 
