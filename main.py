@@ -25,7 +25,7 @@ def generate_room(width: int = 5, height: int = 5,
     for i in range(1, height - 1):
         for j in range(1, width):
             map_window.addstr(i, j, '*')
-    return Window(name, map_window)
+    return Window(name, map_window, [SpecialEdgeCharacter(5, 0, '*'), SpecialEdgeCharacter(height, 5, '*')])
 
 
 def generate_dungeon():
@@ -34,27 +34,45 @@ def generate_dungeon():
     '''
     dungeon = []
     for i in range(4):
-        dungeon.append(Room(name=None, pos_x=i*10))
+        dungeon.append(Room(name=None, pos_x=i*10, open_sides=[SpecialEdgeCharacter('door1', 3, 0, ' '), SpecialEdgeCharacter('door2', 0, 3, ' ')]))
     return dungeon
 
+class SpecialEdgeCharacter:
+  def __init__(self, name:str, pos_y: int, pos_x: int, character: str):
+    self._name = name
+    self._pos_y = pos_y
+    self._pos_x = pos_x
+    self._character = character
+
+  @property
+  def name(self) -> str:
+    return self._name
+
+  @property
+  def pos_y(self) -> int:
+    return self._pos_y
+
+  @property
+  def pos_x(self) -> int:
+    return self._pos_x
+
+  @property
+  def character(self) -> str:
+    return self._character
 
 class Window:
 
-    def __init__(self, name: str, layout: curses.window) -> None:
+    def __init__(self, name: str, layout: curses.window, special_edge_characters = None) -> None:
         self._name = name
         self._layout = layout
 
-        # borders = []
-        # layout_height, layout_width = layout.getmaxyx()
-        # for i in range(0, layout_width):
-        #     borders.append((0, i, layout.getch(0, i)))
-        # for j in range(1, layout_height):
-        #     borders.append((j, layout_width, layout.getch(j, layout_width)))
-        # for i in range(layout_width - 1, 0):
-        #     borders.append((layout_height, i, layout.getch(layout_height, i)))
-        # for j in range(layout_height - 1, 1):
-        #     borders.append((j, 0, layout.getch(j, 0)))
-        # self._borders = borders
+        if special_edge_characters is not None:
+          for special_edge_character in special_edge_characters:
+            layout.addstr(special_edge_character.pos_y, special_edge_character.pos_x, special_edge_character.character)
+          self._special_edge_characters = special_edge_characters
+        else:
+          self._special_edges_characters = None
+
         return None
 
     @property
@@ -65,10 +83,10 @@ class Window:
     def layout(self) -> curses.window:
         return self._layout
 
-    # @property
-    # def borders(self):
-    #     return self._borders
-
+    @property
+    def special_edges(self):
+        return self._special_edge_characters
+        
 
 class Room(Window):
     def __init__(self, name: str = None, width: int = 5, height: int = 5,
@@ -82,6 +100,9 @@ class Room(Window):
             for j in range(0, width):
                 layout.addstr(i, j, '*')
         layout.box()
+        if open_sides is not None:
+          for special_edge_character in open_sides:
+            layout.addstr(special_edge_character.pos_y, special_edge_character.pos_x, special_edge_character.character)
         super().__init__(name, layout)
 
     @property
