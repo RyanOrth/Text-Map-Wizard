@@ -24,24 +24,33 @@ def generate_dungeon():
         dungeon.append(generate_room(pos_x=i*10))
     return dungeon
 
+class SpecialEdgeCharacter:
+  def __init__(self, pos_y: int, pos_x: int, character: str):
+    self.pos_y = pos_y
+    self.pos_x = pos_x
+    self.character = character
+
+  @property
+  def pos_y(self) -> int:
+    return self.pos_y
+
+  @property
+  def pos_x(self) -> int:
+    return self.pos_x
+
+  @property
+  def character(self) -> str:
+    return self.character
 
 class Window:
 
-    def __init__(self, name: str, layout: curses.window) -> None:
+    def __init__(self, name: str, layout: curses.window, special_edge_characters) -> None:
         self._name = name
         self._layout = layout
 
-        borders = []
-        layout_height, layout_width = layout.getmaxyx()
-        for i in range(0, layout_width):
-          borders.append((0, i, layout.getch(0, i)))
-        for j in range(1, layout_height):
-          borders.append((j, layout_width, layout.getch(j, layout_width)))
-        for i in range(layout_width - 1, 0):
-          borders.append((layout_height, i, layout.getch(layout_height, i)))
-        for j in range(layout_height - 1, 1):
-          borders.append((j, 0, layout.getch(j, 0)))
-        self._borders = borders
+        for special_edge_character in special_edge_characters:
+          layout.addstr(special_edge_character.pos_y, special_edge_character.pos_x, special_edge_character.character)
+        self._special_edges = special_edge_characters
         return None
 
     @property
@@ -53,8 +62,8 @@ class Window:
         return self._layout
 
     @property
-    def borders(self):
-        return self._borders
+    def special_edges(self):
+        return self._special_edges
 
 
 class RenderMap:
