@@ -20,8 +20,8 @@ def generate_dungeon():
     Makes a template dungeon
     '''
     dungeon = []
-    for i in range(3):
-        dungeon.push(generate_room(pos_x=i*10))
+    for i in range(4):
+        dungeon.append(generate_room(pos_x=i*10))
     return dungeon
 
 
@@ -67,23 +67,23 @@ class RenderMap:
 
 
 def main(screen: curses.window):
+    curses.curs_set(0)
     # screen = curses.initscr()
 
     # my__window = curses.newwin(10, 10)
     # my__window.addstr(0, 0, "G'day mate")
     # my__window.refresh()
     render_map = RenderMap(screen)
+    # win1 = generate_room(5, 5, 0, 0, 'win1')
 
-    win1 = generate_room(5, 5, 0, 0, 'win1')
+    # # win1.refresh()
 
-    # win1.refresh()
+    # win2 = generate_room(8, 5, 5, 5, 'win2')
+    # # win2.refresh()
+    # # curses.napms(2000)
 
-    win2 = generate_room(8, 5, 5, 5, 'win2')
-    # win2.refresh()
-    # curses.napms(2000)
-
-    render_map.add_window(win1)
-    render_map.add_window(win2)
+    # render_map.add_window(win1)
+    # render_map.add_window(win2)
     for room in generate_dungeon():
         render_map.add_window(room)
 
@@ -103,3 +103,4 @@ def main(screen: curses.window):
 
 
 curses.wrapper(main)
+curses.curs_set(1)
