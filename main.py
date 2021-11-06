@@ -1,6 +1,14 @@
 import curses
+from enum import Enum
 # from curses import newwin
 # from curses import window
+
+
+class Direction(Enum):
+    NORTH = 0
+    EAST = 1
+    SOUTH = 2
+    WEST = 3
 
 
 def generate_room(width: int = 5, height: int = 5,
@@ -21,7 +29,7 @@ def generate_dungeon():
     '''
     dungeon = []
     for i in range(4):
-        dungeon.append(generate_room(pos_x=i*10))
+        dungeon.append(Room(name=None, pos_x=i*10))
     return dungeon
 
 class SpecialEdgeCharacter:
@@ -64,6 +72,17 @@ class Window:
     @property
     def special_edges(self):
         return self._special_edges
+        
+
+class Room(Window):
+    def __init__(self, name: str = None, width: int = 5, height: int = 5,
+                 pos_y: int = 0, pos_x: int = 0, open_sides: list = []) -> None:
+        layout = curses.newwin(height, width + 1, pos_y, pos_x)
+        for i in range(0, height-1):
+            for j in range(0, width):
+                layout.addstr(i, j, '*')
+        layout.box()
+        super().__init__(name, layout)
 
 
 class RenderMap:
@@ -125,6 +144,7 @@ def main(screen: curses.window):
     #     curses.napms(500)
     render_map.render()
     curses.napms(4000)
+    curses.curs_set(1)
+
 
 curses.wrapper(main)
-curses.curs_set(1)
