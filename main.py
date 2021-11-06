@@ -190,15 +190,21 @@ class RenderMap:
         candidate_region = OccuppiedRegion(candidate_window)
 
         for window_position in self._window_positions:
-            if(window_position.min_x <= candidate_region.min_x <= window_position.max_x):
-                if(window_position.min_y <= candidate_region.min_y <= window_position.max_y):
+            if(window_position.min_x <= candidate_region.min_x
+               <= window_position.max_x):
+                if(window_position.min_y <= candidate_region.min_y
+                   <= window_position.max_y):
                     return False
-                elif(window_position.min_y <= candidate_region.max_y <= window_position.max_y):
+                elif(window_position.min_y <= candidate_region.max_y
+                     <= window_position.max_y):
                     return False
-            elif (window_position.min_x <= candidate_region.max_x <= window_position.max_x):
-                if(window_position.min_y <= candidate_region.min_y <= window_position.max_y):
+            elif (window_position.min_x <= candidate_region.max_x
+                  <= window_position.max_x):
+                if(window_position.min_y <= candidate_region.min_y
+                   <= window_position.max_y):
                     return False
-                elif(window_position.min_y <= candidate_region.max_y <= window_position.max_y):
+                elif(window_position.min_y <= candidate_region.max_y
+                     <= window_position.max_y):
                     return False
         return True
 
@@ -222,6 +228,7 @@ class RenderMap:
         '''Render screen function'''
         self.screen.erase()
         self.screen.refresh()
+        data = ''
         for window in self._windows:
             window.layout.refresh()
 
@@ -250,14 +257,15 @@ def main(screen: curses.window):
     # render_map.add_window(win2)
     count = 2
 
-    while count > 0:
-        # canRoom = Room(name=None, width=random.randrange(MIN_ROOM_SIZE - 10, MAX_ROOM_SIZE - 10),
-        #                height=random.randrange(
-        #     MIN_ROOM_SIZE, MAX_ROOM_SIZE),
-        #     pos_y=random.randrange(0, 10), pos_x=random.randrange(0, 10))
-        canRoom = Room(name=None, width=5, height=5, pos_y=random.randrange(0, 12), pos_x=random.randrange(0, 12))
-        if(render_map.add_window(canRoom)):
-            count -= 1
+    # while count > 0:
+    #     canRoom = Room(name=None, width=random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE),
+    #                    height=random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE),
+    #                    pos_y=random.randrange(0, 2*MAX_ROOM_SIZE+1), pos_x=random.randrange(0, 2*MAX_ROOM_SIZE+1))
+    #     if(render_map.add_window(canRoom)):
+    #         count -= 1
+    for i in range(4):
+        for j in range(4):
+            render_map.add_window(Room(None, 5, 5, i*10, j*10))
 
     # for room in generate_dungeon():
     #   render_map.add_window(room)
@@ -274,7 +282,7 @@ def main(screen: curses.window):
     #     render_map.render()
     #     curses.napms(500)
     render_map.render()
-    curses.napms(500)
+    curses.napms(5000)
     curses.curs_set(1)
 
 
