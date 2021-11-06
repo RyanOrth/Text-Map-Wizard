@@ -129,13 +129,13 @@ class Room(Window):
 
 def check_for_overlap(room: Window, rooms: list):
     """Return false if the room overlaps any other room."""
-    xmin1 = room.pos_x
-    xmax1 = room.pos_x + room.width
-    ymin1 = room.pos_y
-    ymax1 = room.pos_y + room.height
     for current_room in rooms:
+        xmin1 = room.pos_x
+        xmax1 = room.pos_x + room.width
         xmin2 = current_room.pos_x
         xmax2 = current_room.pos_x + current_room.width
+        ymin1 = room.pos_y
+        ymax1 = room.pos_y + room.height
         ymin2 = current_room.pos_y
         ymax2 = current_room.pos_y + current_room.height
         if (xmin1 <= xmax2 and xmax1 >= xmin2) and \
@@ -147,11 +147,36 @@ def check_for_overlap(room: Window, rooms: list):
 class Passageway(Window):
     def __init__(self, name: str, layout: curses.window) -> None:
         super().__init__(name, layout)
-        # TODO: stub
 
 
-# class OccuppiedRegion:
-#   __init__(self, min_y, min_x, maxy)
+class OccuppiedRegion:
+    def __init__(self, name: str, min_y: int, min_x: int, max_y: int, max_x: int):
+        self._name = name
+        self._min_y = min_y
+        self._min_x = min_x
+        self._max_y = max_y
+        self._max_x = max_x
+    
+    @property
+    def name(self):
+        return self.name
+
+    @property
+    def min_y(self):
+        return self._min_y
+    
+    @property
+    def min_x(self):
+        return self._min_x
+
+    @property
+    def max_y(self):
+        return self._max_y
+
+    @property
+    def max_x(self):
+        return self._max_x
+    
 
 class RenderMap:
     '''Contains windows to be rendered'''
@@ -161,28 +186,33 @@ class RenderMap:
         self._windows = []
         self._window_positions = []
 
-    def _window_overlaps(self, candidate_window: Window):
-        min_coords = candidate_window.layout.getbegyx()
-        max_coords = candidate_window.layout.getmaxyx()
+    def _window_is_not_overlapping(self, candidate_window: Window):
+        min_y, min_x = candidate_window.layout.getbegyx()
+        max_y, max_x = candidate_window.layout.getmaxyx()
+        candidate_region = OccuppiedRegion(candidate_window.name, min_y, min_x, max_y, max_x)
 
         for window_position in self._window_positions:
-            if(((min_coords[0] >= window_position[0][0]) or (max_coords[0] <= window_position[1][0])) and ((min_coords[1] >= window_position[0][1]) or (max_coords[1] <= window_position[1][1]))):
-                return True
-
-        return False
+            if(((candidate_region.min_x in range(window_position.min_x, window_position.max_x)) or
+            candidate_region.max_x in range(window_position.min_x, window_position.max_x)) and
+            ((candidate_region.min_y in range(window_position.min_y, window_position.max_y)) or
+            candidate_region.max_y in range(window_position.min_y, window_position.max_y))):
+                return False
+        return True
 
     def add_window(self, window: Window):
         '''Adding a new window to the windows list'''
-        if not self._window_overlaps(window):
+        if self._window_is_not_overlapping(window):
             self._windows.append(window)
-            self._window_positions.append(
-                (window.layout.getbegyx(), window.layout.getmaxyx()))
+            min_y, min_x = window.layout.getbegyx()
+            max_y, max_x = window.layout.getmaxyx()
+            self._window_positions.append(OccuppiedRegion(window.name, min_y, min_x, max_y, max_x))
             return True
         return False
 
     def replace_window(self, window: Window):
         '''Update or remove a window in the windows list'''
         self._windows.pop(self._windows.index(window))
+        # list(filter(lambda x:11 in x, Input))
         if window is not None:
             self._windows.append(window)
 
@@ -217,7 +247,7 @@ def main(screen: curses.window):
     # render_map.add_window(win1)
     # render_map.add_window(win2)
     count = 2
-    room_list = []
+
     while count > 0:
         canRoom = Room(name=None, width=random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE),
                        height=random.randrange(
@@ -229,8 +259,19 @@ def main(screen: curses.window):
     # for room in generate_dungeon():
     #   render_map.add_window(room)
 
+    # for i in range(0, 15):
+    #     y, x = win1.layout.getbegyx()
+    #     # screen.erase()
+    #     # screen.refresh()
+    #     # win1.mvwin(i, i)
+    #     # win2.refresh()
+    #     # win1.refresh()
+    #     win1.layout.mvwin(i, i)
+    #     render_map.replace_window(win1)
+    #     render_map.render()
+    #     curses.napms(500)
     render_map.render()
-    curses.napms(1000)
+    curses.napms(4000)
     curses.curs_set(1)
 
 
