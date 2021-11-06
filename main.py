@@ -3,14 +3,14 @@ import curses
 # from curses import window
 
 
-def generate_room(width, height, pos_y, pos_x):
+def generate_room(width, height, pos_y, pos_x, name = None):
     # Need extra space for width due to cursor moving past extra character when adding string
     map_window = curses.newwin(height, width + 1, pos_y, pos_x)
     map_window.box()
     for i in range(1, height - 1):
         for j in range(1, width):
             map_window.addstr(i, j, '*')
-    return map_window
+    return Window(name, map_window)
 
 
 def generate_dungeon():
@@ -32,9 +32,9 @@ class Window:
     def name(self):
         return self._name
 
-        @property
-        def layout(self):
-            return self._layout
+    @property
+    def layout(self):
+        return self._layout
 
 
 class RenderMap:
@@ -44,21 +44,22 @@ class RenderMap:
         self.screen = screen
         self.windows = []
 
-    def add_window(self, window):
-        self.windows.push((window.name, window))
+    def add_window(self, window: Window):
+        self.windows.append(window)
 
-    def replace_window(self, window):
-        index = list(
-            filter(lambda name: window.name in name, self.windows)).index
-        self.windows.pop(index)
+    def replace_window(self, window: Window):
+        # index = 
+        # index = list(
+        #     filter(lambda name: window.name in name, self.windows)).index
+        self.windows.pop(self.windows.index(window))
         if window is not None:
-            self.windows.push((window.name, window))
+            self.windows.append(window)
 
     def render(self):
         self.screen.erase()
         self.screen.refresh()
         for window in self.windows:
-            window.win.refresh()
+            window.layout.refresh()
 
 
 def main(screen: curses.window):
@@ -71,23 +72,24 @@ def main(screen: curses.window):
 
     win1 = generate_room(5, 5, 0, 0)
 
-    win1.refresh()
+    # win1.refresh()
 
     win2 = generate_room(8, 5, 5, 5)
-    win2.refresh()
+    # win2.refresh()
     # curses.napms(2000)
 
-    render_map.add_window('win1', win1)
-    render_map.add_window('win2', win2)
+    render_map.add_window(win1)
+    render_map.add_window(win2)
 
     for i in range(0, 15):
-        y, x = win1.getbegyx()
+        y, x = win1.layout.getbegyx()
         # screen.erase()
         # screen.refresh()
         # win1.mvwin(i, i)
         # win2.refresh()
         # win1.refresh()
-        render_map.replace_window('win1', win2.mvwin(i, i))
+        win1.layout.mvwin(i, i)
+        render_map.replace_window(win1)
         render_map.render()
         curses.napms(500)
 
