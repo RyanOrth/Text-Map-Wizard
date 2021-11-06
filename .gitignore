@@ -130,3 +130,6 @@ dmypy.json
 
 # vscode project settings
 .code-workspace
+workspace.code-workspace
+
+settings.json
