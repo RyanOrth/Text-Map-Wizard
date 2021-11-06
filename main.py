@@ -20,7 +20,7 @@ def generate_room(width: int = 5, height: int = 5,
     for i in range(1, height - 1):
         for j in range(1, width):
             map_window.addstr(i, j, '*')
-    return Window(name, map_window)
+    return Window(name, map_window, [SpecialEdgeCharacter(5, 0, '*'), SpecialEdgeCharacter(height, 5, '*')])
 
 
 def generate_dungeon():
@@ -29,7 +29,7 @@ def generate_dungeon():
     '''
     dungeon = []
     for i in range(4):
-        dungeon.append(Room(name=None, pos_x=i*10))
+        dungeon.append(Room(name=None, pos_x=i*10, open_sides=[SpecialEdgeCharacter('door1', 3, 0, ' '), SpecialEdgeCharacter('door2', 0, 3, ' ')]))
     return dungeon
 
 class SpecialEdgeCharacter:
@@ -40,19 +40,19 @@ class SpecialEdgeCharacter:
     self._character = character
 
   @property
-  def _name(self) -> str:
+  def name(self) -> str:
     return self._name
 
   @property
-  def _pos_y(self) -> int:
+  def pos_y(self) -> int:
     return self._pos_y
 
   @property
-  def _pos_x(self) -> int:
+  def pos_x(self) -> int:
     return self._pos_x
 
   @property
-  def _character(self) -> str:
+  def character(self) -> str:
     return self._character
 
 class Window:
