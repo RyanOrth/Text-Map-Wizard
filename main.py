@@ -42,24 +42,24 @@ class Window:
 
 
 class RenderMap:
-    '''Render function for screen windows'''
+    '''Contains for windows to be rendered'''
 
     def __init__(self, screen):
         self.screen = screen
         self.windows = []
 
     def add_window(self, window: Window):
+        '''Adding a new window to the windows list'''
         self.windows.append(window)
 
     def replace_window(self, window: Window):
-        # index =
-        # index = list(
-        #     filter(lambda name: window.name in name, self.windows)).index
+        '''Update or remove a window in the windows list'''
         self.windows.pop(self.windows.index(window))
         if window is not None:
             self.windows.append(window)
 
     def render(self):
+        '''Render screen function'''
         self.screen.erase()
         self.screen.refresh()
         for window in self.windows:
@@ -74,11 +74,11 @@ def main(screen: curses.window):
     # my__window.refresh()
     render_map = RenderMap(screen)
 
-    win1 = generate_room(5, 5, 0, 0)
+    win1 = generate_room(5, 5, 0, 0, 'win1')
 
     # win1.refresh()
 
-    win2 = generate_room(8, 5, 5, 5)
+    win2 = generate_room(8, 5, 5, 5, 'win2')
     # win2.refresh()
     # curses.napms(2000)
 
