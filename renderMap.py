@@ -12,8 +12,12 @@ class RenderMap:
         self._room_positions = []
         self._passageway_positions = []
 
-    def _window_is_not_overlapping(self, candidate_window: Room) -> bool:
-        candidate_region = OccuppiedRegion(candidate_window)
+    def _window_is_not_overlapping(self, candidate_room: Room) -> bool:
+        ''' Checks whether a room is overlapping with other already genrated rooms
+        :param candidate_room: room to check if it overlaps with any other room already made
+        :returns: boolean on whether it overlaps or not
+        '''
+        candidate_region = OccuppiedRegion(candidate_room)
 
         for window_position in self._room_positions:
             if(window_position.min_x <= candidate_region.min_x
@@ -43,6 +47,7 @@ class RenderMap:
         return False
 
     def add_passageWay(self, passage: PassageWay) -> bool:
+        '''Adding a new passage way to the passageway list to be rendered'''
         self._passageways.append(passage)
         self._passageway_positions.append(OccuppiedRegion(passage))
         return True
