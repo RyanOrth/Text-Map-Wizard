@@ -1,5 +1,6 @@
 import curses
 
+
 class Window:
 
     def __init__(self, name: str, layout: curses.window, special_edge_characters=None) -> None:
