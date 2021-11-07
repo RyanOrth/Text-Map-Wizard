@@ -20,20 +20,14 @@ class RenderMap:
         candidate_region = OccuppiedRegion(candidate_room)
 
         for window_position in self._room_positions:
-            # if(window_position.min_x <= candidate_region.min_x <= window_position.max_x):
             if(candidate_region.min_x in range(window_position.min_x, window_position.max_x + 1)):
-                # if(window_position.min_y <= candidate_region.min_y <= window_position.max_y):
                 if(candidate_region.min_y in range(window_position.min_y, window_position.min_y + 1)):
                     return False
-                # elif(window_position.min_y <= candidate_region.max_y <= window_position.max_y):
                 elif(candidate_region.max_y in range(window_position.min_y, window_position.max_y + 1)):
                     return False
-            # elif (window_position.min_x <= candidate_region.max_x <= window_position.max_x):
             elif (candidate_region.max_x in range(window_position.min_x, window_position.max_x + 1)):
-                # if(window_position.min_y <= candidate_region.min_y <= window_position.max_y):
                 if(candidate_region.min_y in range(window_position.min_y, window_position.min_y + 1)):
                     return False
-                # elif(window_position.min_y <= candidate_region.max_y <= window_position.max_y):
                 elif(candidate_region.max_y in range(window_position.min_y, window_position.max_y + 1)):
                     return False
         return True

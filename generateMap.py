@@ -11,6 +11,7 @@ class GenerateMap:
         self._map_width = map_width
         self._map = []
         self._occupied_regions = []
+        self._special_characters = {}
 
     def generate_map(self) -> list:
         i = 0
@@ -54,14 +55,17 @@ class GenerateMap:
             #         return False
         return True
 
-    def _generate_room(self, index: int) -> Room:
+    def _connect_passageways(self, rooms):
+        pass
+
+    def _generate_room(self, room_index: int):
         height = random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
         width = random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
         pos_y = random.randrange(0, self._map_height - height)
         pos_x = random.randrange(0, self._map_width - width)
-        return Room(f'room{index}', height, width, pos_y, pos_x, self._generate_doors(room_height=height, room_width=width, room_pos_y=pos_y, room_pos_x=pos_x))
+        return Room(f'room{room_index}', height, width, pos_y, pos_x, self._generate_doors(room_index=room_index, room_height=height, room_width=width, room_pos_y=pos_y, room_pos_x=pos_x))
 
-    def _generate_doors(self, room_height, room_width, room_pos_y, room_pos_x) -> list:
+    def _generate_doors(self, room_index: int, room_height: int, room_width: int, room_pos_y: int, room_pos_x: int) -> list:
         doors = []
         num_doors_options = [1, 2, 3, 4]
         num_doors_list = random.choices(
@@ -78,8 +82,11 @@ class GenerateMap:
             not_on_right = not(room_pos_x + room_width ==
                                MAP_X and pos_x == room_width)
             if not_on_top and not_on_right and not_on_left and not_on_bottom:
-                doors.append(SpecialEdgeCharacter(
-                    f'door{i}', pos_y, pos_x, '+'))
+                special_character = SpecialEdgeCharacter(
+                    f'door{i}', pos_y, pos_x, '+')
+                doors.append(special_character)
+                self._special_characters.update(
+                    {f'room{room_index}-door{i}': special_character})
                 i += 1
 
         return doors
