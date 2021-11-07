@@ -1,5 +1,6 @@
 import curses
 
+
 class Window:
 
     def __init__(self, name: str, layout: curses.window, special_edge_characters=None) -> None:
@@ -87,7 +88,7 @@ class PassageWay(Window):
                  pos_y: int = 0, pos_x: int = 0) -> None:
         self._pos_y = pos_y
         self._pos_x = pos_x
-        self._width = width
+        self._width = width if width >= 3 else 3
         self._height = height
         layout = curses.newwin(height, width + 1, pos_y, pos_x)
         for i in range(0, height-1):

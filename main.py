@@ -37,13 +37,13 @@ def main(screen: curses.window):
     #         render_map.add_room(Room(None, 5, 5, i*10, j*10))
 
     # render_map.add_passageWay(PassageWay(None, 3, 5, 1, 5))
-    map_gen = GenerateMap(30, 30)
+    map_gen = GenerateMap(20, 20)
     rooms = map_gen.generate_map()
     for room in rooms:
         render_map.add_room(room)
 
     render_map.render()
-    curses.napms(5000)
+    curses.napms(1000)
     curses.curs_set(1)
 
 
