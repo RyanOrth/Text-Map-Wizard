@@ -110,10 +110,9 @@ class GenerateMap:
                                MAP_X and pos_x == room_width)
             if not_on_top and not_on_right and not_on_left and not_on_bottom:
                 special_character = SpecialEdgeCharacter(
-                    f'door{i}', pos_y, pos_x, '+')
+                    f'room{room_index}-door{i}', pos_y, pos_x, '+')
                 doors.append(special_character)
-                self._special_characters.update(
-                    {f'room{room_index}-door{i}': special_character})
+                self._special_characters.append((special_character))
                 i += 1
 
         return doors
