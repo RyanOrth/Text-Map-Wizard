@@ -94,13 +94,13 @@ class PassageWay(Window):
                  pos_y: int = 0, pos_x: int = 0) -> None:
         self._pos_y = pos_y
         self._pos_x = pos_x
-        self._width = width
-        self._height = height
-        layout = curses.newwin(height, width + 1, pos_y, pos_x)
-        for i in range(0, height-1):
-            for j in range(0, width):
+        self._width = width if width >= 3 else 3
+        self._height = height if height >= 3 else 3
+        layout = curses.newwin(height, self._width + 1, self._pos_y, self._pos_x)
+        for i in range(0, self._height - 1):
+            for j in range(0, self._width):
                 layout.addstr(i, j, '.')
-        if width >= height:
+        if self._width >= self._height:
             layout.border(32, 32, curses.ACS_HLINE, curses.ACS_HLINE,
                           curses.ACS_LLCORNER, curses.ACS_LRCORNER,
                           curses.ACS_ULCORNER, curses.ACS_URCORNER)

@@ -41,6 +41,8 @@ def main(screen: curses.window):
     rooms = map_gen.generate_map()
     for room in rooms:
         render_map.add_room(room)
+    for path in map_gen.paths:
+        render_map.add_passageWay(path)
 
     render_map.render()
     curses.napms(5000)
