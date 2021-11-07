@@ -1,6 +1,5 @@
 import curses
 
-
 class Window:
 
     def __init__(self, name: str, layout: curses.window, special_edge_characters=None) -> None:
@@ -40,7 +39,7 @@ class Room(Window):
     '''
 
     def __init__(self, name: str = None, height: int = 5, width: int = 5,
-                 pos_y: int = 0, pos_x: int = 0, open_sides: list = []) -> None:
+                 pos_y: int = 0, pos_x: int = 0, open_sides: list = None) -> None:
         self._width = width
         self._height = height
         self._pos_x = pos_x

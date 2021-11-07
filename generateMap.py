@@ -2,18 +2,38 @@ from window import Room, Window
 from specialCharacters import SpecialEdgeCharacter
 import random
 from constants import MIN_ROOM_SIZE, MAX_ROOM_SIZE
-
+from occupiedRegion import OccuppiedRegion
 
 class GenerateMap:
     def __init__(self, map_height: int, map_width: int):
         self._map_height = map_height
         self._map_width = map_width
+        self._map = []
+        self._occupied_regions = []
 
     def generate_map(self):
-        map = []
-        for i in range(1, random.randrange(2, 6)):
-            map.append(self._generate_room(i))
-        return map
+        for i in range(1, random.randrange(30, 40)):
+            room = self._generate_room(i)
+            if(self._window_is_not_overlapping(room)):
+                self._map.append(room)
+                self._occupied_regions.append(OccuppiedRegion(room))
+        return self._map
+
+    def _window_is_not_overlapping(self, candidate_window: Room) -> bool:
+        candidate_region = OccuppiedRegion(candidate_window)
+
+        for occupied_region in self._occupied_regions:
+            if(candidate_region.min_x in range(occupied_region.min_x, occupied_region.max_x + 1)):
+                if(candidate_region.min_y in range(occupied_region.min_y, occupied_region.min_y + 1)):
+                    return False
+                elif(candidate_region.max_y in range(occupied_region.min_y, occupied_region.max_y + 1)):
+                    return False
+            elif (candidate_region.max_x in range(occupied_region.min_x, occupied_region.max_x + 1)):
+                if(candidate_region.min_y in range(occupied_region.min_y, occupied_region.min_y + 1)):
+                    return False
+                elif(candidate_region.max_y in range(occupied_region.min_y, occupied_region.max_y + 1)):
+                    return False
+        return True
 
     def _generate_room(self, index: int):
         height = random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
@@ -28,8 +48,7 @@ class GenerateMap:
         num_doors_list = random.choices(num_doors_options, weights=(60, 80, 20, 10))
 
         for i in range(0, num_doors_list[0]):
-            pos_y, pos_x = self._generate_random_door_position(
-                room_height, room_width)
+            pos_y, pos_x = self._generate_random_door_position(room_height, room_width)
             doors.append(SpecialEdgeCharacter(f'door{i}', pos_y, pos_x, '+'))
 
         return doors
@@ -40,5 +59,5 @@ class GenerateMap:
         if(pos_x == 0 or pos_x == room_width):
             pos_y = random.randrange(0, room_height)
         else:
-            pos_y = random.choice([0, room_height])
+            pos_y = random.choice([0, room_height - 1])
         return (pos_y, pos_x)
