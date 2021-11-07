@@ -1,4 +1,4 @@
-from window import Room, Window
+from window import Window
 
 
 class OccuppiedRegion:
