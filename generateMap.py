@@ -54,8 +54,9 @@ class GenerateMap:
 
         for i in range(0, num_doors_list[0]):
             pos_y, pos_x = self._generate_random_door_position(room_height, room_width)
-            doors.append(SpecialEdgeCharacter(f'door{i}', pos_y, pos_x, '+'))
-            self._special_characters.update({f'room{room_index}-door{i}': '+'})
+            special_character = SpecialEdgeCharacter(f'door{i}', pos_y, pos_x, '+')
+            doors.append(special_character)
+            self._special_characters.update({f'room{room_index}-door{i}': special_character})
 
         return doors
 
