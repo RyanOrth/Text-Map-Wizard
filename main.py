@@ -3,7 +3,7 @@ import random
 
 from renderMap import RenderMap
 from specialCharacters import SpecialEdgeCharacter
-from window import Room, Window
+from window import Room, Window, PassageWay
 from constants import MIN_ROOM_SIZE, MAX_ROOM_SIZE
 
 
