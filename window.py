@@ -39,18 +39,20 @@ class Room(Window):
     '''
 
     def __init__(self, name: str = None, height: int = 5, width: int = 5,
-                 pos_y: int = 0, pos_x: int = 0, open_sides: list = None) -> None:
+                 pos_y: int = 0, pos_x: int = 0, special_edge_characters: list = None) -> None:
         self._width = width
         self._height = height
         self._pos_x = pos_x
         self._pos_y = pos_y
+        self._special_edge_characters = special_edge_characters
+        
         layout = curses.newwin(height, width + 1, pos_y, pos_x)
         for i in range(0, height-1):
             for j in range(0, width):
                 layout.addstr(i, j, '.')
         layout.box()
-        if open_sides is not None:
-            for special_edge_character in open_sides:
+        if special_edge_characters is not None:
+            for special_edge_character in special_edge_characters:
                 layout.addstr(special_edge_character.pos_y,
                               special_edge_character.pos_x, special_edge_character.character)
         super().__init__(name, layout)
@@ -74,6 +76,11 @@ class Room(Window):
     def width(self):
         '''width of the room'''
         return self._width
+
+    @property
+    def special_edge_characters(self):
+        '''list of special edge characters'''
+        return self._special_edge_characters
 
 
 class PassageWay(Window):

@@ -10,6 +10,7 @@ class GenerateMap:
         self._map_width = map_width
         self._map = []
         self._occupied_regions = []
+        self._special_characters = {}
 
     def generate_map(self):
         for i in range(1, random.randrange(30, 40)):
@@ -35,14 +36,17 @@ class GenerateMap:
                     return False
         return True
 
-    def _generate_room(self, index: int):
+    def _connect_passageways(self, rooms):
+        pass
+
+    def _generate_room(self, room_index: int):
         height = random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
         width = random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
         pos_y = random.randrange(0, self._map_height - height)
         pos_x = random.randrange(0, self._map_width - width)
-        return Room(f'room{index}', height, width, pos_y, pos_x, self._generate_doors(room_height=height, room_width=width))
+        return Room(f'room{room_index}', height, width, pos_y, pos_x, self._generate_doors(room_index=room_index, room_height=height, room_width=width))
 
-    def _generate_doors(self, room_height, room_width):
+    def _generate_doors(self, room_index: int, room_height: int, room_width: int):
         doors = []
         num_doors_options = [1, 2, 3, 4]
         num_doors_list = random.choices(
@@ -51,6 +55,7 @@ class GenerateMap:
         for i in range(0, num_doors_list[0]):
             pos_y, pos_x = self._generate_random_door_position(room_height, room_width)
             doors.append(SpecialEdgeCharacter(f'door{i}', pos_y, pos_x, '+'))
+            self._special_characters.update({f'room{room_index}-door{i}': '+'})
 
         return doors
 
