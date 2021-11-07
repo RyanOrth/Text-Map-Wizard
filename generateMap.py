@@ -40,12 +40,13 @@ class GenerateMap:
         width = random.randrange(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
         pos_y = random.randrange(0, self._map_height - height)
         pos_x = random.randrange(0, self._map_width - width)
-        return Room(f'room{index}', height, width, pos_y, pos_x, self._generate_doors(height, width))
+        return Room(f'room{index}', height, width, pos_y, pos_x, self._generate_doors(room_height=height, room_width=width))
 
     def _generate_doors(self, room_height, room_width):
         doors = []
         num_doors_options = [1, 2, 3, 4]
-        num_doors_list = random.choices(num_doors_options, weights=(60, 80, 20, 10))
+        num_doors_list = random.choices(
+            num_doors_options, weights=(60, 80, 20, 10))
 
         for i in range(0, num_doors_list[0]):
             pos_y, pos_x = self._generate_random_door_position(room_height, room_width)
